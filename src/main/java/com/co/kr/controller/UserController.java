@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.co.kr.domain.BoardListDomain;
@@ -34,7 +36,7 @@ public class UserController {
 	@Autowired
 	private UploadService uploadService;
 
-	@RequestMapping(value = "board")
+	@RequestMapping(value = "/board")
 	public ModelAndView login(LoginVO loginDTO, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		//session 처리 
@@ -84,5 +86,15 @@ public class UserController {
 		mav.addObject("items", items);
 		mav.setViewName("board/boardList.html");
 		return mav; 
+	}
+	
+	@RequestMapping(value = "detail")
+	public ModelAndView detail(@RequestParam("bdSeq") String bdSeq) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("bdSeq",Integer.parseInt(bdSeq));
+		BoardListDomain boardListDomain = uploadService.boardSelectOne(map);
+		mav.addObject("detail", boardListDomain);
+		return mav;
 	}
 }

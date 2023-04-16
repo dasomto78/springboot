@@ -33,6 +33,4 @@ public interface UserMapper {
     
     //삭제
     public void mbRemove(Map<String, String> map);
-    
 }
-

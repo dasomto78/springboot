@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.co.kr.domain.BoardListDomain;
 import com.co.kr.domain.LoginDomain;
+import com.co.kr.domain.StudyListDomain;
+import com.co.kr.service.StudyService;
 import com.co.kr.service.UploadService;
 import com.co.kr.service.UserService;
 import com.co.kr.util.CommonUtils;
@@ -39,6 +41,9 @@ public class UserController {
 	
 	@Autowired
 	private UploadService uploadService;
+	
+	@Autowired
+	private StudyService studyService;
 
 	@RequestMapping(value = "board")
 	public ModelAndView login(LoginVO loginDTO, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -90,6 +95,15 @@ public class UserController {
 		return mav; 
 	};
 	
+	  // 좌측 메뉴 클릭시 보드화면 이동 (로그인된 상태)
+		@RequestMapping(value = "stList")
+		public ModelAndView stList() { 
+			ModelAndView mav = new ModelAndView();
+			List<StudyListDomain> items = studyService.studyList();
+			mav.addObject("items", items);
+			mav.setViewName("study/studyList.html");
+			return mav; 
+		};
 	
 	
 	//대시보드 리스트 보여주기
@@ -199,7 +213,7 @@ public class UserController {
 				.mbSeq(Integer.parseInt(loginVO.getSeq()))
 				.mbId(loginVO.getId())
 				.mbPw(loginVO.getPw())
-				//.mbLevel(loginVO.getLevel())
+				.mbLevel(loginVO.getLevel())
 				.mbIp(IP)
 				.mbUse("Y")
 				.build();

@@ -7,7 +7,10 @@ public enum Table {
 
 	MEMBER("member"),
 	FILES("files"),
-	BOARD("board");
+	BOARD("board"),
+	STUDY("study"),
+	STFILES("stfiles");
+	
 	
 	private String table;
 

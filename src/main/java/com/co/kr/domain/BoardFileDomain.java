@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder(builderMethodName="builder")
 public class BoardFileDomain {
 
-	
 	private Integer bdSeq;
 	private String mbId;
 	

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.co.kr.mapper.StudyCommentMapper">
+
+	<!--select all-->
+	<select id="studycommentList" resultType="com.co.kr.domain.StudyCommentListDomain" parameterType = "hashMap">
+		SELECT sc_seq, st_seq, mb_id, sc_content, sc_create_at, sc_update_at
+		FROM jsp.stcomment where st_seq = #{stSeq} order by sc_update_at desc
+	</select>
+	
+	<!-- content -->
+	<select id="studycommentSelectOne" resultType="com.co.kr.domain.StudyCommentListDomain" parameterType="map">
+    	SELECT sc_seq, st_seq, mb_id, sc_content, sc_create_at, sc_update_at
+    	FROM jsp.stcomment where sc_seq = #{scSeq}
+	</select>
+		
+	<!-- content insert -->
+	<insert id="studycommentContentUpload" parameterType="com.co.kr.domain.StudyCommentContentDomain"
+	useGeneratedKeys="true"
+    keyProperty="scSeq" keyColumn="sc_seq">
+    	INSERT INTO jsp.stcomment (st_seq, mb_id, sc_content)
+        VALUES (#{stSeq}, #{mbId}, #{scContent})
+	</insert>
+	
+	<!-- Content update -->
+    <update id="studycommentContentUpdate" parameterType="com.co.kr.domain.StudyCommentContentDomain">
+        UPDATE jsp.stcomment SET 
+        sc_seq=#{scSeq},
+        st_seq=#{stSeq},
+        mb_id=#{mbId},
+        sc_content=#{scContent}, 
+        sc_update_at=now()  
+        WHERE sc_seq=#{scSeq}
+    </update>
+
+	<!-- Content delete -->
+    <delete id="studycommentContentRemove" parameterType="hashMap">
+    	DELETE FROM jsp.stcomment WHERE sc_seq=#{scSeq}
+    </delete>
+
+</mapper>

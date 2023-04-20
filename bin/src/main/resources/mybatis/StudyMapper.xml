@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.co.kr.mapper.StudyMapper">
+
+	<!--select all-->
+	<select id="studyList" resultType="com.co.kr.domain.StudyListDomain">
+	  SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at
+	  FROM jsp.study order by st_update_at desc
+	</select>
+	<!-- content -->
+<select id="studySelectOne" resultType="com.co.kr.domain.StudyListDomain" parameterType="map">
+    SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at
+    FROM jsp.study where st_seq = #{stSeq}
+</select>
+<!-- file -->
+<select id="studySelectOneFile" resultType="com.co.kr.domain.StudyFileDomain" parameterType="map">
+    SELECT st_seq, mb_id, stup_original_file_name, stup_new_file_name, stup_file_path, stup_file_size
+    FROM jsp.stview_board where st_seq = #{stSeq}
+</select>
+	<!-- content insert -->
+	<insert id="stcontentUpload" parameterType="com.co.kr.domain.StudyContentDomain"
+	useGeneratedKeys="true"
+        keyProperty="stSeq" keyColumn="st_seq">
+	
+        INSERT INTO jsp.study (
+            mb_id,   
+						st_title,                         
+						st_content  
+        )
+        VALUES (
+            #{mbId},
+            #{stTitle},
+            #{stContent}
+        )
+	</insert>
+	
+	<!-- file insert -->
+	<insert id="stfileUpload" parameterType="com.co.kr.domain.StudyFileDomain">
+        INSERT INTO jsp.stfiles (
+            st_seq,
+            mb_id,   
+            stup_original_file_name,                         
+            stup_new_file_name,                      
+            stup_file_path,                                   
+            stup_file_size
+        )
+        VALUES (
+            #{stSeq},
+            #{mbId},
+            #{stupOriginalFileName},
+            #{stupNewFileName},
+            #{stupFilePath},
+            #{stupFileSize}
+        )
+    </insert>
+
+		<!-- Content update -->
+    <update id="stContentUpdate" parameterType="com.co.kr.domain.StudyContentDomain">
+        UPDATE jsp.study SET
+                st_seq=#{stSeq},
+                mb_id=#{mbId},
+                st_title=#{stTitle},
+                st_content=#{stContent}, 
+                st_update_at=now()  
+        WHERE st_seq=#{stSeq}
+    </update>
+
+    <!-- file update -->
+    <update id="stFileUpdate" parameterType="com.co.kr.domain.StudyFileDomain">
+        UPDATE jsp.stfiles SET
+                st_seq=#{stSeq},
+                mb_id=#{mbId},
+                stup_original_file_name=#{stupOriginalFileName},
+                stup_new_file_name=#{stupNewFileName}, 
+                stup_file_path=#{stupFilePath},
+                stup_file_size=#{stupFileSize}
+        WHERE st_seq=#{stSeq}
+    </update>
+
+	<!-- Content delete -->
+    <delete id="stContentRemove" parameterType="hashMap">
+       DELETE FROM jsp.study WHERE st_seq=#{stSeq}
+    </delete>
+	<!-- file delete -->
+    <delete id="stFileRemove" parameterType="com.co.kr.domain.StudyFileDomain">
+	    DELETE FROM jsp.stfiles WHERE stup_new_file_name = #{stupNewFileName}
+	</delete>
+	
+
+</mapper>

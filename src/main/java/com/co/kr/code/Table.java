@@ -9,7 +9,8 @@ public enum Table {
 	FILES("files"),
 	BOARD("board"),
 	STUDY("study"),
-	STFILES("stfiles");
+	STFILES("stfiles"),
+	STCOMMENT("stcomment");
 	
 	
 	private String table;

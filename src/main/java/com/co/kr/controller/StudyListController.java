@@ -23,9 +23,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.co.kr.code.Code;
+import com.co.kr.domain.StudyCommentContentDomain;
+import com.co.kr.domain.StudyCommentListDomain;
 import com.co.kr.domain.StudyFileDomain;
 import com.co.kr.domain.StudyListDomain;
 import com.co.kr.exception.RequestException;
+import com.co.kr.service.StudyCommentService;
 import com.co.kr.service.StudyService;
 import com.co.kr.vo.FileListVO;
 
@@ -38,6 +41,8 @@ public class StudyListController {
 	@Autowired
 	private StudyService studyService;
 
+	@Autowired
+	private StudyCommentService studyCommentService;
 	
 	@PostMapping(value = "/stdetail")
 	//리스트 하나 가져오기 따로 함수뺌
@@ -50,11 +55,13 @@ public class StudyListController {
 			StudyListDomain studyListDomain = studyService.studySelectOne(map);
 			System.out.println("studyListDomain"+studyListDomain);
 			List<StudyFileDomain> fileList =  studyService.studySelectOneFile(map);
+			List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
 			
 			for (StudyFileDomain list : fileList) {
 				String path = list.getStupFilePath().replaceAll("\\\\", "/");
 				list.setStupFilePath(path);
 			}
+			mav.addObject("scitems", studyCommentListDomains);
 			mav.addObject("stdetail", studyListDomain);
 			mav.addObject("files", fileList);
 			mav.setViewName("/study/studyList.html");
@@ -63,7 +70,16 @@ public class StudyListController {
 
 			return mav;
 		}
-
+	
+/*	public ModelAndView scSelect(FileListVO fileListVO) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("stSeq", fileListVO.getStscseq());
+		List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
+		mav.addObject("scitems", studyCommentListDomains);
+		return mav;
+	} */
+	
 	
 	@PostMapping(value = "stupload")
 	public ModelAndView stUpload(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq) throws IOException, ParseException {
@@ -79,6 +95,25 @@ public class StudyListController {
 		return mav;
 		
 	}
+	
+	@PostMapping(value = "scupload")
+	public ModelAndView scUpload(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq) throws IOException, ParseException {
+		
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, Object> map = new HashMap<>();
+		
+		int stSeq = studyCommentService.fileProcess(fileListVO, httpReq);
+		fileListVO.setContent(""); //초기화
+		map.put("stSeq", stSeq);
+		List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
+		
+		mav = stSelectOneCall(fileListVO, String.valueOf(stSeq), request);
+		mav.addObject("scitems", studyCommentListDomains);
+		mav.setViewName("study/studyList.html");
+		return mav;
+		
+	}
+	
 	//detail
 		@GetMapping("stdetail")
 	    public ModelAndView stDetail(@ModelAttribute("fileListVO") FileListVO fileListVO, @RequestParam("stSeq") String stSeq, HttpServletRequest request) throws IOException {

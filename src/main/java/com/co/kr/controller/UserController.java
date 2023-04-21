@@ -97,12 +97,48 @@ public class UserController {
 	
 	  // 좌측 메뉴 클릭시 보드화면 이동 (로그인된 상태)
 		@RequestMapping(value = "stList")
-		public ModelAndView stList() { 
+		public ModelAndView stList(HttpServletRequest request) { 
+			
 			ModelAndView mav = new ModelAndView();
-			List<StudyListDomain> items = studyService.studyList();
-			mav.addObject("items", items);
-			mav.setViewName("study/studyList.html");
-			return mav; 
+			HttpSession session = request.getSession();
+			String page = (String) session.getAttribute("page");
+			if(page == null)page = "1";
+			
+			//전체 갯수
+			int totalcount = studyService.stGetAll();
+			int contentnum = 10;
+			
+			
+			//데이터 유무 분기
+			boolean itemsNotEmpty;
+			
+			if(totalcount > 0) { // 데이터 있을때
+				
+				// itemsNotEmpty true일때만, 리스트 & 페이징 보여주기
+				itemsNotEmpty = true;
+				//페이지 표현 데이터 가져오기
+				Map<String,Object> pagination = Pagination.pagination(totalcount, request);
+				
+				HashMap<String, Object> map = new HashMap<>();
+		        map.put("offset",pagination.get("offset"));
+		        map.put("contentnum",contentnum);
+				
+		        //페이지별 데이터 가져오기
+				List<StudyListDomain> studyListDomains = studyService.studyAllList(map);
+				
+				//모델객체 넣어주기
+				mav.addObject("itemsNotEmpty", itemsNotEmpty);
+				mav.addObject("items", studyListDomains);
+				mav.addObject("rowNUM", pagination.get("rowNUM"));
+				mav.addObject("pageNum", pagination.get("pageNum"));
+				mav.addObject("startpage", pagination.get("startpage"));
+				mav.addObject("endpage", pagination.get("endpage"));
+				mav.setViewName("study/studyList.html");
+			}else {
+				itemsNotEmpty = false;
+			}
+			
+			return mav;
 		};
 	
 	

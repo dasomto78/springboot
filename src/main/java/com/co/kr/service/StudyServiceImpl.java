@@ -232,4 +232,8 @@ public class StudyServiceImpl implements StudyService{
 		public int stGetAll() {
 			return studyMapper.stGetAll();
 		};
+		
+		public List<StudyListDomain> studyAllList(HashMap<String, Object> map){
+			return studyMapper.studyAllList(map);
+		};
 }

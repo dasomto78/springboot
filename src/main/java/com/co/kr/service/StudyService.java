@@ -34,4 +34,6 @@ public interface StudyService {
 		
 		//전체 개수
 		public int stGetAll();
+		
+		public List<StudyListDomain> studyAllList(HashMap<String, Object> map);
 }

@@ -8,6 +8,11 @@
 	  SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at
 	  FROM jsp.study order by st_update_at desc
 	</select>
+	<!--select all2-->
+	<select id="studyAllList" resultType="com.co.kr.domain.StudyListDomain" parameterType = "map">
+	  SELECT *
+	  FROM jsp.study order by st_update_at desc limit #{offset}, #{contentnum}
+	</select>
 	<!-- content -->
 <select id="studySelectOne" resultType="com.co.kr.domain.StudyListDomain" parameterType="map">
     SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at

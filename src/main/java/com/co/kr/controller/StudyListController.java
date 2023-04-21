@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.co.kr.code.Code;
+import com.co.kr.domain.LoginDomain;
 import com.co.kr.domain.StudyCommentContentDomain;
 import com.co.kr.domain.StudyCommentListDomain;
 import com.co.kr.domain.StudyFileDomain;
@@ -31,6 +33,7 @@ import com.co.kr.domain.StudyListDomain;
 import com.co.kr.exception.RequestException;
 import com.co.kr.service.StudyCommentService;
 import com.co.kr.service.StudyService;
+import com.co.kr.util.Pagination;
 import com.co.kr.vo.FileListVO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +65,7 @@ public class StudyListController {
 				String path = list.getStupFilePath().replaceAll("\\\\", "/");
 				list.setStupFilePath(path);
 			}
+			
 			mav.addObject("scitems", studyCommentListDomains);
 			mav.addObject("stdetail", studyListDomain);
 			mav.addObject("files", fileList);
@@ -214,7 +218,7 @@ public class StudyListController {
 			if(session.getAttribute("files") != null) {						
 				fileList = (List<StudyFileDomain>) session.getAttribute("files");
 			}
-
+			
 			map.put("stSeq", Integer.parseInt(stSeq));
 			
 			//내용삭제
@@ -240,10 +244,9 @@ public class StudyListController {
 			scAllRemove(stSeq);
 			//세션해제
 			session.removeAttribute("files"); // 삭제
-			mav = stListCall();
-			mav.setViewName("study/studyList.html");
 			
-			return mav;
+			mav = Paging(request);
+			return mav; 
 		}
 
 		public void scAllRemove(String stSeq) {
@@ -286,10 +289,55 @@ public class StudyListController {
 
 
 	//리스트 가져오기 따로 함수뺌
-	public ModelAndView stListCall() {
+	public ModelAndView stListCall(HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();
-		List<StudyListDomain> items = studyService.studyList();
-		mav.addObject("items", items);
+		//페이지네이션 추가  SELECT * FROM jsp.member order by mb_update_at limit 1, 5; {offset}{limit}
+
+		//전체 갯수
+		int totalcount = studyService.stGetAll();
+		int contentnum = 10;
+		
+		
+		//데이터 유무 분기
+		boolean itemsNotEmpty;
+		
+		if(totalcount > 0) { // 데이터 있을때
+			
+			// itemsNotEmpty true일때만, 리스트 & 페이징 보여주기
+			itemsNotEmpty = true;
+			//페이지 표현 데이터 가져오기
+			Map<String,Object> pagination = Pagination.pagination(totalcount, request);
+			
+			HashMap<String, Object> map = new HashMap<>();
+	        map.put("offset",pagination.get("offset"));
+	        map.put("contentnum",contentnum);
+			
+	        //페이지별 데이터 가져오기
+			List<StudyListDomain> studyListDomains = studyService.studyAllList(map);
+			
+			//모델객체 넣어주기
+			mav.addObject("itemsNotEmpty", itemsNotEmpty);
+			mav.addObject("items", studyListDomains);
+			mav.addObject("rowNUM", pagination.get("rowNUM"));
+			mav.addObject("pageNum", pagination.get("pageNum"));
+			mav.addObject("startpage", pagination.get("startpage"));
+			mav.addObject("endpage", pagination.get("endpage"));
+			
+		}else {
+			itemsNotEmpty = false;
+		}
+		
 		return mav;
 	}
-}
+	
+	public ModelAndView Paging(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HttpSession session = request.getSession();
+		String page = (String) session.getAttribute("page");
+		if(page == null)page = "1";
+		session.setAttribute("page", page);
+		mav = stListCall(request);
+		mav.setViewName("study/studyList.html");
+		return mav;
+	}
+	}

@@ -236,10 +236,36 @@ public class StudyListController {
 		            e.printStackTrace();
 		        }
 			}
-
+			scAllRemove(stSeq);
 			//세션해제
 			session.removeAttribute("files"); // 삭제
 			mav = stListCall();
+			mav.setViewName("study/studyList.html");
+			
+			return mav;
+		}
+
+		public void scAllRemove(String stSeq) {
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("stSeq", stSeq);
+			studyCommentService.studycommentAllContentRemove(map);
+		}
+		
+		@GetMapping("scremove")
+		public ModelAndView scRemove(@RequestParam("scSeq") String scSeq, @RequestParam("stSeq") String stSeq, FileListVO fileListVO ,HttpServletRequest request) throws IOException {
+			ModelAndView mav = new ModelAndView();
+			
+			HttpSession session = request.getSession();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("scSeq", Integer.parseInt(scSeq));
+			
+			//내용삭제
+			studyCommentService.studycommentContentRemove(map);
+			
+			map.put("stSeq", Integer.parseInt(stSeq));
+			List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
+			mav = stSelectOneCall(fileListVO, stSeq, request);
+			mav.addObject("scitems", studyCommentListDomains);
 			mav.setViewName("study/studyList.html");
 			
 			return mav;

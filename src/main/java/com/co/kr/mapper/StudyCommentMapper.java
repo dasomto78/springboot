@@ -23,7 +23,10 @@ public interface StudyCommentMapper {
 	//content update
 	public void studycommentContentUpdate(StudyCommentContentDomain studyCommentContentDomain);
 
-  //content delete 
+	//content delete 
 	public void studycommentContentRemove(HashMap<String, Object> map);
+	
+	//every content delete
+	public void studycommentAllContentRemove(HashMap<String, Object> map);
 	
 }

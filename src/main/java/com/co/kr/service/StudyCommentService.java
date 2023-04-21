@@ -23,4 +23,7 @@ public interface StudyCommentService {
 
 	// 하나 삭제
 	public void studycommentContentRemove(HashMap<String, Object> map);
+	
+	// 모두 삭제
+	public void studycommentAllContentRemove(HashMap<String, Object> map);
 }

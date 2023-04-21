@@ -38,5 +38,9 @@
     <delete id="studycommentContentRemove" parameterType="hashMap">
     	DELETE FROM jsp.stcomment WHERE sc_seq=#{scSeq}
     </delete>
-
+    
+    <!-- Content delete -->
+    <delete id="studycommentAllContentRemove" parameterType="hashMap">
+    	DELETE FROM jsp.stcomment WHERE st_seq=#{stSeq}
+    </delete>
 </mapper>

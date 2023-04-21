@@ -83,4 +83,9 @@ public class StudyCommentServiceImpl implements StudyCommentService {
 		return studyCommentMapper.studycommentSelectOne(map);
 	}
 	
+	// 모두 삭제
+	public void studycommentAllContentRemove(HashMap<String, Object> map) {
+		studyCommentMapper.studycommentAllContentRemove(map);
+	};
+	
 }

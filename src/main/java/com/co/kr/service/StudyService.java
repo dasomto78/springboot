@@ -28,4 +28,10 @@ public interface StudyService {
 		public StudyListDomain studySelectOne(HashMap<String, Object> map);
 		// 하나 파일 리스트 조회
 		public List<StudyFileDomain> studySelectOneFile(HashMap<String, Object> map);
+		
+		//검색창
+		public List<StudyListDomain> studySelectSelect(HashMap<String, Object> map);
+		
+		//전체 개수
+		public int stGetAll();
 }

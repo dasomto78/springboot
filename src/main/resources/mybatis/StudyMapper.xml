@@ -13,6 +13,14 @@
     SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at
     FROM jsp.study where st_seq = #{stSeq}
 </select>
+<select id="studySelectSelect" resultType="com.co.kr.domain.StudyListDomain" parameterType="map">
+SELECT st_seq, mb_id, st_title, st_content, st_create_at, st_update_at
+    FROM jsp.study WHERE st_title LIKE CONCAT('%', #{stTitle}, '%') ORDER BY st_update_at DESC;
+</select>
+<!-- stGetAll -->
+	<select id="stGetAll" resultType="int">
+	   SELECT COUNT(*) FROM jsp.study
+	</select>
 <!-- file -->
 <select id="studySelectOneFile" resultType="com.co.kr.domain.StudyFileDomain" parameterType="map">
     SELECT st_seq, mb_id, stup_original_file_name, stup_new_file_name, stup_file_path, stup_file_size

@@ -222,5 +222,14 @@ public class StudyServiceImpl implements StudyService{
 	public List<StudyFileDomain> studySelectOneFile(HashMap<String, Object> map) {
 		return studyMapper.studySelectOneFile(map);
 	}
+	
+	//검색창
+	public List<StudyListDomain> studySelectSelect(HashMap<String, Object> map) {
+		return studyMapper.studySelectSelect(map);
+	};
 
+	//전체 개수
+		public int stGetAll() {
+			return studyMapper.stGetAll();
+		};
 }

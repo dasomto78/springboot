@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -268,6 +269,18 @@ public class StudyListController {
 			mav.addObject("scitems", studyCommentListDomains);
 			mav.setViewName("study/studyList.html");
 			
+			return mav;
+		}
+		
+		@RequestMapping("studyselect")
+		public ModelAndView studySelect(FileListVO fileListVO) {
+			ModelAndView mav = new ModelAndView();
+			String keyword = fileListVO.getKeyword();
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("stTitle", keyword);
+			List<StudyListDomain> studyListDomains = studyService.studySelectSelect(map);
+			mav.addObject("items", studyListDomains);
+			mav.setViewName("study/studyList.html");
 			return mav;
 		}
 

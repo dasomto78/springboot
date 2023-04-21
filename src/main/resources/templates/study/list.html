@@ -1,4 +1,22 @@
 <div class="section list">
+	<form role="form" action="studyselect" method="post" enctype="multipart/form-data">
+    <div class="section form">
+        <table>
+        <th:block th:if="${items}">
+            <tbody>
+                <tr> 
+                    <td>
+                        <input type="text" name="keyword" placeholder="찾으려는 게시글의 제목을 입력하세요"/>
+                    </td>
+                    <td>
+                        <button type="submit">검색</button>
+                    </td>
+                </tr>
+            </tbody>
+            </th:block>
+        </table>
+    </div>
+	</form>
     <table>
         <th:block th:if="${items}">
             <colgroup>

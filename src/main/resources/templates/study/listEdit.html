@@ -47,32 +47,30 @@
             </ul>
         </div>
         <div style="padding: 30px 0; text-align: right;">
-        	<th:block th:if="${stdetail.mbId == session.id}">
-    			<a th:href="@{/stedit(stSeq = ${stdetail.stSeq})}"><button>수정</button></a>
-    			<a th:href="@{/stremove(stSeq = ${stdetail.stSeq})}"><button>삭제</button></a>
-			</th:block>
         	    <a  th:href="@{stList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
         </div>
-        <form role="form" action="scupload" method="post" enctype="multipart/form-data">
+            </th:block>
+            <th:block th:if="${scitems}">
+        <form role="form" action="sceditSave" th:object = ${fileListVO} method="post" enctype="multipart/form-data">
     		<div class="section form">
 				<table>
         			<tbody>
             			<tr> 
                 			<td>
-                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${stdetail.stSeq}" required/>
-								<input type="hidden" name="seq" placeholder="댓글번호" required/>
+                				<input type="hidden" th:field="*{isEdit}"/>
+                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${scitems.stSeq}" required/>
+								<input type="hidden" name="seq" th:value="${scitems.scSeq}" placeholder="댓글번호" required/>
                    				<textarea colspan="2" id="story" name="content" placeholder="댓글을 적어주세요." rows="5" cols="200" required></textarea>
                 			</td>
          			   </tr>
        				</tbody>
        			</table>
 			<div class="button">
-            	<button type="submit" style="margin-right: 11px">댓글 달기</button>
+            	<button type="submit" style="margin-right: 11px">수정하기</button>
        		</div>
     		</div>
 		</form>
 		 <table>
-		 <th:block th:if="${scitems}">
             <colgroup>
                 <col style="width: 45%"/>
                 <col style="width: 10%"/>
@@ -98,15 +96,13 @@
                     <td th:text="${scitem.scUpdateAt}"></td>
                     <td>
          				<span th:if="${scitem.mbId == session.id}">
-           				<a th:href="@{/scedit(scSeq = ${scitem.scSeq})}"><button>수정</button></a>
-            			<a><button>삭제</button></a>
+      						fixing...
           				</span>
         			</td>
                 </tr>
                 
                     
         	</tbody>
-        	    </th:block>
     	</table>
     </th:block>
 </div>

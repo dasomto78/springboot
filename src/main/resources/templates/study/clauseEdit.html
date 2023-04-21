@@ -6,7 +6,8 @@
     </button>
 </div>
 
-<div class="title" style="color:#00a2be">보드 리스트</div>
+<div class="title" style="color:#00a2be">스터디 모집</div>
+ <th:block th:unless="${scitems}">
 <form role="form" th:object=${fileListVO} th:action="@{steditSave}" method="post" enctype="multipart/form-data">
     <div class="section form">
        <table>
@@ -45,3 +46,4 @@
     </div>
 
 </form>
+</th:block>

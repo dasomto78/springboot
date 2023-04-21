@@ -56,7 +56,7 @@ public class StudyListController {
 			System.out.println("studyListDomain"+studyListDomain);
 			List<StudyFileDomain> fileList =  studyService.studySelectOneFile(map);
 			List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
-			
+			System.out.println(studyCommentListDomains);
 			for (StudyFileDomain list : fileList) {
 				String path = list.getStupFilePath().replaceAll("\\\\", "/");
 				list.setStupFilePath(path);
@@ -144,7 +144,6 @@ public class StudyListController {
 				fileListVO.setTitle(studyListDomain.getStTitle());
 				fileListVO.setIsEdit("edit");  // upload 재활용하기위해서
 				
-			
 				mav.addObject("stdetail", studyListDomain);
 				mav.addObject("files", fileList);
 				mav.addObject("fileLen",fileList.size());
@@ -153,12 +152,31 @@ public class StudyListController {
 				return mav;
 			}
 		
+		@GetMapping("scedit")
+		public ModelAndView scedit(FileListVO fileListVO, @RequestParam("scSeq") String scSeq, HttpServletRequest request) throws IOException {
+			
+			ModelAndView mav = new ModelAndView();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			HttpSession session = request.getSession();
+			
+			map.put("scSeq", scSeq);
+			StudyCommentListDomain studyCommentListDomain = studyCommentService.studycommentSelectOne(map);
+
+			fileListVO.setSeq(studyCommentListDomain.getScSeq());
+			fileListVO.setContent(studyCommentListDomain.getScContent());
+			fileListVO.setIsEdit("edit");  // upload 재활용하기위해서
+			
+			mav.addObject("scitems", studyCommentListDomain);
+			mav.setViewName("study/studyEditList.html");
+			return mav;
+		}
+		
 		@PostMapping("steditSave")
 			public ModelAndView steditSave(@ModelAttribute("fileListVO") FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq) throws IOException {
 				ModelAndView mav = new ModelAndView();
-				
 				//저장
 				studyService.fileProcess(fileListVO, request, httpReq);
+				
 				
 				mav = stSelectOneCall(fileListVO, fileListVO.getSeq(),request);
 				fileListVO.setContent(""); //초기화
@@ -166,6 +184,25 @@ public class StudyListController {
 				mav.setViewName("study/studyList.html");
 				return mav;
 			}
+		
+		@PostMapping("sceditSave")
+		public ModelAndView sceditSave(@ModelAttribute("fileListVO") FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq) throws IOException {
+			ModelAndView mav = new ModelAndView();
+			//저장
+			int stSeq = studyCommentService.fileProcess(fileListVO, httpReq);
+			HashMap<String, Object> map = new HashMap<>();
+			
+			map.put("stSeq", stSeq);
+			List<StudyCommentListDomain> studyCommentListDomains = studyCommentService.studycommentList(map);
+			
+			mav = stSelectOneCall(fileListVO, String.valueOf(stSeq),request);
+			mav.addObject("scitems", studyCommentListDomains);
+			fileListVO.setContent(""); //초기화
+			fileListVO.setTitle(""); //초기화
+			mav.setViewName("study/studyList.html");
+			return mav;
+		}
+		
 		@GetMapping("stremove")
 		public ModelAndView stRemove(@RequestParam("stSeq") String stSeq, HttpServletRequest request) throws IOException {
 			ModelAndView mav = new ModelAndView();

@@ -1,4 +1,22 @@
 <div class="section list">
+	<form role="form" action="studyselect" method="post" enctype="multipart/form-data">
+    <div class="section form">
+        <table>
+        <th:block th:if="${items}">
+            <tbody>
+                <tr> 
+                    <td>
+                        <input type="text" name="keyword" placeholder="찾으려는 게시글의 제목을 입력하세요"/>
+                    </td>
+                    <td>
+                        <button type="submit">검색</button>
+                    </td>
+                </tr>
+            </tbody>
+            </th:block>
+        </table>
+    </div>
+	</form>
     <table>
         <th:block th:if="${items}">
             <colgroup>
@@ -34,30 +52,132 @@
     
     <th:block th:if="${stdetail}">   
         <h1 style="padding: 30px 0;" th:text="${stdetail.stTitle}"></h1>
-        
         <div style="text-align: right;">
             <span style="color: #00a2be;">글번호 </span> <span th:text="${stdetail.stSeq}"></span> <span style="color: #00a2be"> | </span>
             <span style="color: #00a2be">글쓴이 </span> <span th:text="${stdetail.mbId}"></span> <span style="color: #00a2be"> | </span> 
             <span th:text="${stdetail.stCreateAt}"></span> <span style="color: #00a2be"> | </span> 
             <span th:text="${stdetail.stUpdateAt}"></span> 
-            
         </div>
-        
         <div>
             <p style="padding: 30px 0;" th:text="${stdetail.stContent}"></p>
             <ul th:if="${files}"  th:each="file : ${files}" style="display: inline-block;margin-bottom: 5px;">
                 <li> <img id="imgId" th:src="@{${file.stupNewFileName}}" alt="첨부이미지" height="280" /></li>
             </ul>
-            
         </div>
-
         <div style="padding: 30px 0; text-align: right;">
-        <th:block th:if="${stdetail.mbId == session.id}">
-    <a th:href="@{/stedit(stSeq = ${stdetail.stSeq})}"><button>수정</button></a>
-    <a th:href="@{/stremove(stSeq = ${stdetail.stSeq})}"><button>삭제</button></a>
-</th:block>
-            <a  th:href="@{stList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
+        	<th:block th:if="${stdetail.mbId == session.id}">
+    			<a th:href="@{/stedit(stSeq = ${stdetail.stSeq})}"><button>수정</button></a>
+    			<a th:href="@{/stremove(stSeq = ${stdetail.stSeq})}"><button>삭제</button></a>
+			</th:block>
+        	    <a  th:href="@{stList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
         </div>
-        
+        <form role="form" action="scupload" method="post" enctype="multipart/form-data">
+    		<div class="section form">
+				<table>
+        			<tbody>
+            			<tr> 
+                			<td>
+                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${stdetail.stSeq}" required/>
+								<input type="hidden" name="seq" placeholder="댓글번호" required/>
+                   				<textarea colspan="2" id="story" name="content" placeholder="댓글을 적어주세요." rows="5" cols="200" required></textarea>
+                			</td>
+         			   </tr>
+       				</tbody>
+       			</table>
+			<div class="button">
+            	<button type="submit" style="margin-right: 11px">댓글 달기</button>
+       		</div>
+    		</div>
+		</form>
+		 <table>
+		 <th:block th:if="${scitems}">
+            <colgroup>
+                <col style="width: 45%"/>
+                <col style="width: 10%"/>
+                <col style="width: 15%"/>
+                <col style="width: 15%"/>
+                <col style="width: 10%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>댓글</th>
+                    <th>아이디</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                    <th>수정/삭제</th>
+                </tr>
+            </thead>
+
+            <tbody>
+          	  	<tr th:each="scitem : ${scitems}">
+                    <td th:text="${scitem.scContent}"></td>
+                    <td th:text="${scitem.mbId}"></td>
+                    <td th:text="${scitem.scCreateAt}"></td>
+                    <td th:text="${scitem.scUpdateAt}"></td>
+                    <td>
+         				<span th:if="${scitem.mbId == session.id}">
+           				<a th:href="@{/scedit(scSeq = ${scitem.scSeq})}"><button>수정</button></a>
+            			<a th:href="@{/scremove(scSeq=${scitem.scSeq}, stSeq=${scitem.stSeq})}"><button>삭제</button></a>
+          				</span>
+        			</td>
+                </tr>
+                
+                    
+        	</tbody>
+        	    </th:block>
+    	</table>
     </th:block>
+    
+    <div th:if=${itemsNotEmpty} class="pagination">
+        <ul>
+            <th:block th:switch="${startpage} <= ${endpage}">
+                <li th:case="${rowNUM} < 0" style="display: none;">
+                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                </li>
+                <li th:case="${rowNUM} > ${startpage}" style="display: inline-block">
+                    <a class="icon first" th:href="@{stList(page=${startpage})}">&laquo;</a>
+                </li>
+                <li th:case="${startpage} < 10" style="display: none;">
+                    <a class="icon first" th:href="@{stList(page=${startpage}-10)}">&laquo;</a>
+                </li>
+                <li th:case="${startpage} > 10" style="display: inline-block;">
+                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                </li>
+            </th:block>
+
+            <th:block th:switch="${rowNUM} >= 1">
+                <li th:case="(${rowNUM}-1) == 0" style="display: none">
+                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                </li>
+                <li th:case="(${rowNUM}-1) > 0" style="display: inline-block">
+                    <a class="icon first" th:href="@{stList(page=${rowNUM}-1)}"></a>
+                </li>
+            </th:block>
+            
+            <!-- for 문 -->
+            <li th:each="i : ${#numbers.sequence(startpage, endpage)}" style="display: inline-block">
+                <div class="on" th:if="${i}==${rowNUM}" th:text="${i}"></div>
+                <div th:unless="${i}==${rowNUM}">
+                    <a class="on" th:href="@{stList(page=${i})}" th:text="${i}"></a>
+                </div>
+            </li>
+            <!-- for 문 -->
+            
+            <th:block th:switch="${rowNUM} <= ${endpage}">
+                <li th:case="${rowNUM} < ${endpage}" style="display: inline-block">
+                    <a class="icon last" th:href="@{stList(page=${rowNUM}+1)}"></a>
+                </li>
+                <li th:case="${rowNUM} == ${endpage}" style="display: none">
+                    <a class="icon last" th:href="@{stList(page=${endpage})}"></a>
+                </li>
+            </th:block>
+
+            <th:block th:switch="${rowNUM} < ${endpage}">
+                <li th:case="${rowNUM} < ${endpage}" style="display: inline-block">
+                    <a class="icon last" th:href="@{stList(page=${startpage}+10)}"></a>
+                </li>
+            </th:block>
+            
+        </ul>
+    </div> 
 </div>

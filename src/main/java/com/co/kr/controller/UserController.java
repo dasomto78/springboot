@@ -21,7 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.co.kr.domain.BoardListDomain;
 import com.co.kr.domain.LoginDomain;
+import com.co.kr.domain.QuestionListDomain;
 import com.co.kr.domain.StudyListDomain;
+import com.co.kr.service.QuestionService;
 import com.co.kr.service.StudyService;
 import com.co.kr.service.UploadService;
 import com.co.kr.service.UserService;
@@ -44,6 +46,9 @@ public class UserController {
 	
 	@Autowired
 	private StudyService studyService;
+	
+	@Autowired
+	private QuestionService questionService;
 
 	@RequestMapping(value = "board")
 	public ModelAndView login(LoginVO loginDTO, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -140,6 +145,52 @@ public class UserController {
 			
 			return mav;
 		};
+		
+		// 좌측 메뉴 클릭시 보드화면 이동 (로그인된 상태)
+				@RequestMapping(value = "qList")
+				public ModelAndView qList(HttpServletRequest request) { 
+					
+					ModelAndView mav = new ModelAndView();
+					HttpSession session = request.getSession();
+					String page = (String) session.getAttribute("page");
+					if(page == null)page = "1";
+					
+					//전체 갯수
+					int totalcount = questionService.qGetAll();
+					int contentnum = 10;
+					
+					
+					//데이터 유무 분기
+					boolean itemsNotEmpty;
+					
+					if(totalcount > 0) { // 데이터 있을때
+						
+						// itemsNotEmpty true일때만, 리스트 & 페이징 보여주기
+						itemsNotEmpty = true;
+						//페이지 표현 데이터 가져오기
+						Map<String,Object> pagination = Pagination.pagination(totalcount, request);
+						
+						HashMap<String, Object> map = new HashMap<>();
+				        map.put("offset",pagination.get("offset"));
+				        map.put("contentnum",contentnum);
+						
+				        //페이지별 데이터 가져오기
+						List<QuestionListDomain> questionListDomains = questionService.questionAllList(map);
+						
+						//모델객체 넣어주기
+						mav.addObject("itemsNotEmpty", itemsNotEmpty);
+						mav.addObject("items", questionListDomains);
+						mav.addObject("rowNUM", pagination.get("rowNUM"));
+						mav.addObject("pageNum", pagination.get("pageNum"));
+						mav.addObject("startpage", pagination.get("startpage"));
+						mav.addObject("endpage", pagination.get("endpage"));
+						mav.setViewName("question/questionList.html");
+					}else {
+						itemsNotEmpty = false;
+					}
+					
+					return mav;
+				};
 	
 	
 	//대시보드 리스트 보여주기

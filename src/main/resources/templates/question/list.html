@@ -1,18 +1,26 @@
 <div class="section list">
-	<form role="form" action="studyselect" method="post" enctype="multipart/form-data">
+	<form role="form" action="questionselect" method="post" enctype="multipart/form-data">
     <div class="section form">
         <table>
         <th:block th:if="${items}">
             <tbody>
                 <tr>
-                <td> 
-                    <div style="display:inline-block">
+                	<td>
+                	 <div style="display:inline-block">
+     				   <select name="category" style="width:200px">
+          			   <option value="Springboot">Springboot</option>
+         			   <option value="Vue">Vue</option>
+         			   <option value="운영체제">운영체제</option>
+       			       <option value="머신러닝">머신러닝</option>
+        			   </select>
+    				</div>
+    				<div style="display:inline-block">
         				<input type="text" style="width:600px" name="keyword" placeholder="찾으려는 게시글의 제목을 입력하세요"/>
   		  			</div>
   		  			<div style="display:inline-block">
         				<button type="submit">검색</button>
   		  			</div>
-  		  			</td>
+                    </td>
                 </tr>
             </tbody>
             </th:block>
@@ -23,6 +31,7 @@
         <th:block th:if="${items}">
             <colgroup>
                 <col style="width: 5%"/>
+                <col style="width: 10%"/>
                 <col style="width: 50%"/>
                 <col style="width: 10%"/>
                 <col style="width: 15%"/>
@@ -31,6 +40,7 @@
             <thead>
                 <tr>
                     <th>글번호</th>
+                    <th>과목</th>
                     <th>제목</th>
                     <th>아이디</th>
                     <th>등록일</th>
@@ -41,45 +51,47 @@
             <tbody>
               
                 <tr th:each="item : ${items}">
-                    <td th:text="${item.stSeq}"></td>
-                    <td><a a th:text="${item.stTitle}" th:href="@{/stdetail(stSeq = ${item.stSeq})}"></a></td>
+                    <td th:text="${item.qSeq}"></td>
+                    <td th:text="${item.qCategory}"></td>
+                    <td><a a th:text="${item.qTitle}" th:href="@{/qdetail(qSeq = ${item.qSeq})}"></a></td>
                     <td th:text="${item.mbId}"></td>
-                    <td th:text="${item.stCreateAt}"></td>
-                    <td th:text="${item.stUpdateAt}"></td>
+                    <td th:text="${item.qCreateAt}"></td>
+                    <td th:text="${item.qUpdateAt}"></td>
                 </tr>
             </th:block>    
                
         </tbody>
     </table>
     
-    <th:block th:if="${stdetail}">   
-        <h1 style="padding: 30px 0;" th:text="${stdetail.stTitle}"></h1>
+    <th:block th:if="${qdetail}">   
+        <h1 style="padding: 30px 0;" th:text="${qdetail.qTitle}"></h1>
         <div style="text-align: right;">
-            <span style="color: #00a2be;">글번호 </span> <span th:text="${stdetail.stSeq}"></span> <span style="color: #00a2be"> | </span>
-            <span style="color: #00a2be">글쓴이 </span> <span th:text="${stdetail.mbId}"></span> <span style="color: #00a2be"> | </span> 
-            <span th:text="${stdetail.stCreateAt}"></span> <span style="color: #00a2be"> | </span> 
-            <span th:text="${stdetail.stUpdateAt}"></span> 
+            <span style="color: #00a2be;">글번호 </span> <span th:text="${qdetail.qSeq}"></span> <span style="color: #00a2be"> | </span>
+            <span style="color: #00a2be">글쓴이 </span> <span th:text="${qdetail.mbId}"></span> <span style="color: #00a2be"> | </span> 
+            <span style="color: #00a2be">과목 </span> <span th:text="${qdetail.qCategory}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${qdetail.qCreateAt}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${qdetail.qUpdateAt}"></span> 
         </div>
         <div>
-            <p style="padding: 30px 0;" th:text="${stdetail.stContent}"></p>
+            <p style="padding: 30px 0;" th:text="${qdetail.qContent}"></p>
             <ul th:if="${files}"  th:each="file : ${files}" style="display: inline-block;margin-bottom: 5px;">
-                <li> <img id="imgId" th:src="@{${file.stupNewFileName}}" alt="첨부이미지" height="280" /></li>
+                <li> <img id="imgId" th:src="@{${file.qupNewFileName}}" alt="첨부이미지" height="280" /></li>
             </ul>
         </div>
         <div style="padding: 30px 0; text-align: right;">
-        	<th:block th:if="${stdetail.mbId == session.id}">
-    			<a th:href="@{/stedit(stSeq = ${stdetail.stSeq})}"><button>수정</button></a>
-    			<a th:href="@{/stremove(stSeq = ${stdetail.stSeq})}"><button>삭제</button></a>
+        	<th:block th:if="${qdetail.mbId == session.id}">
+    			<a th:href="@{/qedit(qSeq = ${qdetail.qSeq})}"><button>수정</button></a>
+    			<a th:href="@{/qremove(qSeq = ${qdetail.qSeq})}"><button>삭제</button></a>
 			</th:block>
-        	    <a  th:href="@{stList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
+        	    <a  th:href="@{qList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
         </div>
-        <form role="form" action="scupload" method="post" enctype="multipart/form-data">
+        <form role="form" action="qcupload" method="post" enctype="multipart/form-data">
     		<div class="section form">
 				<table>
         			<tbody>
             			<tr> 
                 			<td>
-                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${stdetail.stSeq}" required/>
+                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${qdetail.qSeq}" required/>
 								<input type="hidden" name="seq" placeholder="댓글번호" required/>
                    				<textarea colspan="2" id="story" name="content" placeholder="댓글을 적어주세요." rows="5" cols="200" required></textarea>
                 			</td>
@@ -92,7 +104,7 @@
     		</div>
 		</form>
 		 <table>
-		 <th:block th:if="${scitems}">
+		 <th:block th:if="${qcitems}">
             <colgroup>
                 <col style="width: 45%"/>
                 <col style="width: 10%"/>
@@ -111,15 +123,15 @@
             </thead>
 
             <tbody>
-          	  	<tr th:each="scitem : ${scitems}">
-                    <td th:text="${scitem.scContent}"></td>
-                    <td th:text="${scitem.mbId}"></td>
-                    <td th:text="${scitem.scCreateAt}"></td>
-                    <td th:text="${scitem.scUpdateAt}"></td>
+          	  	<tr th:each="qcitem : ${qcitems}">
+                    <td th:text="${qcitem.qcContent}"></td>
+                    <td th:text="${qcitem.mbId}"></td>
+                    <td th:text="${qcitem.qcCreateAt}"></td>
+                    <td th:text="${qcitem.qcUpdateAt}"></td>
                     <td>
-         				<span th:if="${scitem.mbId == session.id}">
-           				<a th:href="@{/scedit(scSeq = ${scitem.scSeq})}"><button>수정</button></a>
-            			<a th:href="@{/scremove(scSeq=${scitem.scSeq}, stSeq=${scitem.stSeq})}"><button>삭제</button></a>
+         				<span th:if="${qcitem.mbId == session.id}">
+           				<a th:href="@{/qcedit(qcSeq = ${qcitem.qcSeq})}"><button>수정</button></a>
+            			<a th:href="@{/qcremove(qcSeq=${qcitem.qcSeq}, qSeq=${qcitem.qSeq})}"><button>삭제</button></a>
           				</span>
         			</td>
                 </tr>
@@ -134,25 +146,25 @@
         <ul>
             <th:block th:switch="${startpage} <= ${endpage}">
                 <li th:case="${rowNUM} < 0" style="display: none;">
-                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                    <a class="icon first" th:href="@{qList(page=${1})}">&laquo;</a>
                 </li>
                 <li th:case="${rowNUM} > ${startpage}" style="display: inline-block">
-                    <a class="icon first" th:href="@{stList(page=${startpage})}">&laquo;</a>
+                    <a class="icon first" th:href="@{qList(page=${startpage})}">&laquo;</a>
                 </li>
                 <li th:case="${startpage} < 10" style="display: none;">
-                    <a class="icon first" th:href="@{stList(page=${startpage}-10)}">&laquo;</a>
+                    <a class="icon first" th:href="@{qList(page=${startpage}-10)}">&laquo;</a>
                 </li>
                 <li th:case="${startpage} > 10" style="display: inline-block;">
-                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                    <a class="icon first" th:href="@{qList(page=${1})}">&laquo;</a>
                 </li>
             </th:block>
 
             <th:block th:switch="${rowNUM} >= 1">
                 <li th:case="(${rowNUM}-1) == 0" style="display: none">
-                    <a class="icon first" th:href="@{stList(page=${1})}">&laquo;</a>
+                    <a class="icon first" th:href="@{qList(page=${1})}">&laquo;</a>
                 </li>
                 <li th:case="(${rowNUM}-1) > 0" style="display: inline-block">
-                    <a class="icon first" th:href="@{stList(page=${rowNUM}-1)}"></a>
+                    <a class="icon first" th:href="@{qList(page=${rowNUM}-1)}"></a>
                 </li>
             </th:block>
             
@@ -160,23 +172,23 @@
             <li th:each="i : ${#numbers.sequence(startpage, endpage)}" style="display: inline-block">
                 <div class="on" th:if="${i}==${rowNUM}" th:text="${i}"></div>
                 <div th:unless="${i}==${rowNUM}">
-                    <a class="on" th:href="@{stList(page=${i})}" th:text="${i}"></a>
+                    <a class="on" th:href="@{qList(page=${i})}" th:text="${i}"></a>
                 </div>
             </li>
             <!-- for 문 -->
             
             <th:block th:switch="${rowNUM} <= ${endpage}">
                 <li th:case="${rowNUM} < ${endpage}" style="display: inline-block">
-                    <a class="icon last" th:href="@{stList(page=${rowNUM}+1)}"></a>
+                    <a class="icon last" th:href="@{qList(page=${rowNUM}+1)}"></a>
                 </li>
                 <li th:case="${rowNUM} == ${endpage}" style="display: none">
-                    <a class="icon last" th:href="@{stList(page=${endpage})}"></a>
+                    <a class="icon last" th:href="@{qList(page=${endpage})}"></a>
                 </li>
             </th:block>
 
             <th:block th:switch="${rowNUM} < ${endpage}">
                 <li th:case="${rowNUM} < ${endpage}" style="display: inline-block">
-                    <a class="icon last" th:href="@{stList(page=${startpage}+10)}"></a>
+                    <a class="icon last" th:href="@{qList(page=${startpage}+10)}"></a>
                 </li>
             </th:block>
             

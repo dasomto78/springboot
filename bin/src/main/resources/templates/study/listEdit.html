@@ -1,0 +1,108 @@
+<div class="section list">
+    <table>
+        <th:block th:if="${items}">
+            <colgroup>
+                <col style="width: 5%"/>
+                <col style="width: 50%"/>
+                <col style="width: 10%"/>
+                <col style="width: 15%"/>
+                <col style="width: 15%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>제목</th>
+                    <th>아이디</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                </tr>
+            </thead>
+
+            <tbody>
+              
+                <tr th:each="item : ${items}">
+                    <td th:text="${item.stSeq}"></td>
+                    <td><a a th:text="${item.stTitle}" th:href="@{/stdetail(stSeq = ${item.stSeq})}"></a></td>
+                    <td th:text="${item.mbId}"></td>
+                    <td th:text="${item.stCreateAt}"></td>
+                    <td th:text="${item.stUpdateAt}"></td>
+                </tr>
+            </th:block>    
+               
+        </tbody>
+    </table>
+    
+    <th:block th:if="${stdetail}">   
+        <h1 style="padding: 30px 0;" th:text="${stdetail.stTitle}"></h1>
+        <div style="text-align: right;">
+            <span style="color: #00a2be;">글번호 </span> <span th:text="${stdetail.stSeq}"></span> <span style="color: #00a2be"> | </span>
+            <span style="color: #00a2be">글쓴이 </span> <span th:text="${stdetail.mbId}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${stdetail.stCreateAt}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${stdetail.stUpdateAt}"></span> 
+        </div>
+        <div>
+            <p style="padding: 30px 0;" th:text="${stdetail.stContent}"></p>
+            <ul th:if="${files}"  th:each="file : ${files}" style="display: inline-block;margin-bottom: 5px;">
+                <li> <img id="imgId" th:src="@{${file.stupNewFileName}}" alt="첨부이미지" height="280" /></li>
+            </ul>
+        </div>
+        <div style="padding: 30px 0; text-align: right;">
+        	    <a  th:href="@{stList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
+        </div>
+            </th:block>
+            <th:block th:if="${scitems}">
+        <form role="form" action="sceditSave" th:object = ${fileListVO} method="post" enctype="multipart/form-data">
+    		<div class="section form">
+				<table>
+        			<tbody>
+            			<tr> 
+                			<td>
+                				<input type="hidden" th:field="*{isEdit}"/>
+                				<input type="hidden" name="stscseq" placeholder="글번호" th:value="${scitems.stSeq}" required/>
+								<input type="hidden" name="seq" th:value="${scitems.scSeq}" placeholder="댓글번호" required/>
+                   				<textarea colspan="2" id="story" name="content" placeholder="댓글을 적어주세요." rows="5" cols="200" required></textarea>
+                			</td>
+         			   </tr>
+       				</tbody>
+       			</table>
+			<div class="button">
+            	<button type="submit" style="margin-right: 11px">수정하기</button>
+       		</div>
+    		</div>
+		</form>
+		 <table>
+            <colgroup>
+                <col style="width: 45%"/>
+                <col style="width: 10%"/>
+                <col style="width: 15%"/>
+                <col style="width: 15%"/>
+                <col style="width: 10%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>댓글</th>
+                    <th>아이디</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                    <th>수정/삭제</th>
+                </tr>
+            </thead>
+
+            <tbody>
+          	  	<tr th:each="scitem : ${scitems}">
+                    <td th:text="${scitem.scContent}"></td>
+                    <td th:text="${scitem.mbId}"></td>
+                    <td th:text="${scitem.scCreateAt}"></td>
+                    <td th:text="${scitem.scUpdateAt}"></td>
+                    <td>
+         				<span th:if="${scitem.mbId == session.id}">
+      						fixing...
+          				</span>
+        			</td>
+                </tr>
+                
+                    
+        	</tbody>
+    	</table>
+    </th:block>
+</div>

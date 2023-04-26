@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.co.kr.mapper.QuestionCommentMapper">
+
+	<!--select all-->
+	<select id="questioncommentList" resultType="com.co.kr.domain.QuestionCommentListDomain" parameterType = "hashMap">
+		SELECT qc_seq, q_seq, mb_id, qc_content, qc_create_at, qc_update_at
+		FROM jsp.qcomment where q_seq = #{qSeq} order by qc_update_at desc
+	</select>
+	
+	<!-- content -->
+	<select id="questioncommentSelectOne" resultType="com.co.kr.domain.QuestionCommentListDomain" parameterType="map">
+    	SELECT qc_seq, q_seq, mb_id, qc_content, qc_create_at, qc_update_at
+    	FROM jsp.qcomment where qc_seq = #{qcSeq}
+	</select>
+		
+	<!-- content insert -->
+	<insert id="questioncommentContentUpload" parameterType="com.co.kr.domain.QuestionCommentContentDomain"
+	useGeneratedKeys="true"
+    keyProperty="qcSeq" keyColumn="qc_seq">
+    	INSERT INTO jsp.qcomment (q_seq, mb_id, qc_content)
+        VALUES (#{qSeq}, #{mbId}, #{qcContent})
+	</insert>
+	
+	<!-- Content update -->
+    <update id="questioncommentContentUpdate" parameterType="com.co.kr.domain.QuestionCommentContentDomain">
+        UPDATE jsp.qcomment SET 
+        qc_seq=#{qcSeq},
+        q_seq=#{qSeq},
+        mb_id=#{mbId},
+        qc_content=#{qcContent}, 
+        qc_update_at=now()  
+        WHERE qc_seq=#{qcSeq}
+    </update>
+
+	<!-- Content delete -->
+    <delete id="questioncommentContentRemove" parameterType="hashMap">
+    	DELETE FROM jsp.qcomment WHERE qc_seq=#{qcSeq}
+    </delete>
+    
+    <!-- Content delete -->
+    <delete id="questioncommentAllContentRemove" parameterType="hashMap">
+    	DELETE FROM jsp.qcomment WHERE q_seq=#{qSeq}
+    </delete>
+</mapper>

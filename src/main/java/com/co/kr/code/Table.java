@@ -10,7 +10,10 @@ public enum Table {
 	BOARD("board"),
 	STUDY("study"),
 	STFILES("stfiles"),
-	STCOMMENT("stcomment");
+	STCOMMENT("stcomment"),
+	QUESTION("question"),
+	QFILES("qfiles"),
+	QCOMMENT("qcomment");
 	
 	
 	private String table;

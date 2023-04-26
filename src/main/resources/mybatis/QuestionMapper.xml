@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.co.kr.mapper.QuestionMapper">
+
+	<!--select all-->
+	<select id="questionList" resultType="com.co.kr.domain.QuestionListDomain">
+		SELECT q_seq, mb_id, q_category, q_title, q_content, q_create_at, q_update_at
+		FROM jsp.question order by q_update_at desc
+	</select>
+	<!--select all2-->
+	<select id="questionAllList" resultType="com.co.kr.domain.QuestionListDomain" parameterType = "map">
+	  	SELECT * FROM jsp.question order by q_update_at desc limit #{offset}, #{contentnum}
+	</select>
+	<!-- content -->
+	<select id="questionSelectOne" resultType="com.co.kr.domain.QuestionListDomain" parameterType="map">
+    	SELECT q_seq, mb_id, q_category, q_title, q_content, q_create_at, q_update_at
+    	FROM jsp.question where q_seq = #{qSeq}
+	</select>
+	<select id="questionSelectSelect" resultType="com.co.kr.domain.QuestionListDomain" parameterType="map">
+		SELECT q_seq, mb_id, q_category, q_title, q_content, q_create_at, q_update_at
+    	FROM jsp.question WHERE q_title LIKE CONCAT('%', #{qTitle}, '%') AND q_category = #{qCategory} ORDER BY q_update_at DESC;
+	</select>
+	<!-- qGetAll -->
+	<select id="qGetAll" resultType="int">
+	   SELECT COUNT(*) FROM jsp.question
+	</select>
+	<!-- file -->
+	<select id="questionSelectOneFile" resultType="com.co.kr.domain.QuestionFileDomain" parameterType="map">
+    	SELECT q_seq, mb_id, qup_original_file_name, qup_new_file_name, qup_file_path, qup_file_size
+    	FROM jsp.qview_board where q_seq = #{qSeq}
+	</select>
+	<!-- content insert -->
+	<insert id="qcontentUpload" parameterType="com.co.kr.domain.QuestionContentDomain"
+	useGeneratedKeys="true" keyProperty="qSeq" keyColumn="q_seq">
+        INSERT INTO jsp.question (mb_id, q_category, q_title, q_content)
+        VALUES (#{mbId}, #{qCategory}, #{qTitle}, #{qContent})
+	</insert>	
+	<!-- file insert -->
+	<insert id="qfileUpload" parameterType="com.co.kr.domain.QuestionFileDomain">
+        INSERT INTO jsp.qfiles (q_seq, mb_id, qup_original_file_name, qup_new_file_name,                      
+        qup_file_path, qup_file_size)
+        VALUES (#{qSeq}, #{mbId}, #{qupOriginalFileName}, #{qupNewFileName}, #{qupFilePath},
+        #{qupFileSize})
+    </insert>
+		<!-- Content update -->
+    <update id="qContentUpdate" parameterType="com.co.kr.domain.QuestionContentDomain">
+        UPDATE jsp.question SET q_seq=#{qSeq}, mb_id=#{mbId}, q_category=#{qCategory},
+        q_title=#{qTitle}, q_content=#{qContent}, q_update_at=now()  
+        WHERE q_seq=#{qSeq}
+    </update>
+    <!-- file update -->
+    <update id="qFileUpdate" parameterType="com.co.kr.domain.QuestionFileDomain">
+        UPDATE jsp.qfiles SET q_seq=#{qSeq}, mb_id=#{mbId}, qup_original_file_name=#{qupOriginalFileName},
+        qup_new_file_name=#{qupNewFileName}, qup_file_path=#{qupFilePath}, qup_file_size=#{qupFileSize}
+        WHERE q_seq=#{qSeq}
+    </update>
+	<!-- Content delete -->
+    <delete id="qContentRemove" parameterType="hashMap">
+    	DELETE FROM jsp.question WHERE q_seq=#{qSeq}
+    </delete>
+	<!-- file delete -->
+    <delete id="qFileRemove" parameterType="com.co.kr.domain.QuestionFileDomain">
+		DELETE FROM jsp.qfiles WHERE qup_new_file_name = #{qupNewFileName}
+	</delete>
+	
+
+</mapper>

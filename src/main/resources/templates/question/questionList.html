@@ -14,13 +14,13 @@
 </th:block>
 
 <head>
-    <title>스터디 모집</title>
+    <title></title>
 </head>
 
 <div th:if=${session.id} layout:fragment="content">
     <div class="container">
-        <th:block th:include="study/clauseEdit.html"></th:block>
-        <th:block th:include="study/listEdit.html"></th:block>
+        <th:block th:include="question/clause.html"></th:block>
+        <th:block th:include="question/list.html"></th:block>
     </div>
 </div>
 

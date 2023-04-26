@@ -7,8 +7,8 @@
 </div>
 
 <div class="title" style="color:#00a2be">스터디 모집</div>
- <th:block th:unless="${scitems}">
-<form role="form" th:object=${fileListVO} th:action="@{steditSave}" method="post" enctype="multipart/form-data">
+ <th:block th:unless="${qcitems}">
+<form role="form" th:object=${fileListVO} th:action="@{qeditSave}" method="post" enctype="multipart/form-data">
     <div class="section form">
        <table>
         <colgroup>
@@ -38,6 +38,17 @@
                     <span style="color: #00a2be" th:text="'*새로 파일첨부시 기존 파일은 삭제됩니다.(첨부된 파일 : '+ ${fileLen} + '개)'"></span>
                 </td>
             </tr>
+             <tr> 
+            	<th>과목</th>
+                    <td>
+                        <select name="category" style="width:200px">
+                        	<option value="Springboot">Springboot</option>
+                            <option value="Vue">Vue</option>
+                            <option value="운영체제">운영체제</option>
+                            <option value="머신러닝">머신러닝</option>
+                        </select>
+                    </td>
+                </tr>
         </tbody>
        </table>
        <div class="button">
